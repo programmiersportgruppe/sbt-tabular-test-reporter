@@ -1,9 +1,11 @@
+What it Does
+============
+
 The Test Reporter plugin provides a test listener, TabularTestReporter that writes test results in a whitespace
 separated tabular format to a file, so that it is easy to analyse test results using standard unix tools, such as
 sort, awk and uniq.
 
-Here is an example result:
-
+Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
     SUCCESS    0.015 ExampleSpec should_pass
     FAILURE    0.017 ExampleSpec failure_should_be_reported
@@ -15,6 +17,8 @@ Here is an example result:
 All the test results for a project are written into a single file, that has a time stamped filename, such as:
 
     test-results-20150207-130331.txt
+
+This helps analysing issues across build runs.
 
 There is also a symlink that links to the latest:
 
@@ -28,17 +32,19 @@ Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or pr
 
     addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "1.0.0")
 
-This will add the dependency to the plugin. The next step is to configure your build to output the XML. The following will output the XML in target/test-reports:
+This will add the dependency to the plugin. The next step is to configure your build to actually use the reporter.
+The following will output the test results in target/test-reports:
 
     testListeners <<= target.map(t => Seq(new org.programmiersportgruppe.sbt.testreporter.TabularTestReporter(t.getAbsolutePath)))
 
-Note that the line as shown is enough in a *.sbt file. In *.scala files (full configuration), you must collect the result of the expression into the settings of all projects that should produce the XML output.
+Note that the line as shown is enough in a *.sbt file. In *.scala files (full configuration), you must collect the
+result of the expression into the settings of all projects that should write test reports.
 
 Open
 ====
 
-* (How) should we render details on test failures (without loosing the nice - single lineness)?
-    + Perhaps alternative single line json document rendering
+* How should we render details on test failures (without loosing the nice - single lineness)?
+* Should the hostname and the time be include in the file?
 * Is time stamping the filename the right solution or should we have an "archiving plugin"?
 * Investigate whether and how the time taken for tearDown and setUp is accounted for.
 * Make automatic testing with scripted work.
