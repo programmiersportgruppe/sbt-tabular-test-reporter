@@ -25,8 +25,8 @@ pomExtra := (
     </license>
   </licenses>
     <scm>
-      <url>git@github.com:programmiersportgruppe/future-stream.git</url>
-      <connection>scm:git:git@github.com:programmiersportgruppe/future-stream.git</connection>
+      <url>https://github.com/programmiersportgruppe</url>
+      <connection>scm:git:git@github.com:programmiersportgruppe/sbt-test-reporter.git</connection>
     </scm>
     <developers>
       <developer>
