@@ -42,7 +42,7 @@ sbtPlugin := true
 
 name := "testreporter"
 
-organization := "org.programmierportgruppe.sbt"
+organization := "org.programmiersportgruppe.sbt"
 
 description := "A simple plugin that outputs tab separated test results."
 

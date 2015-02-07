@@ -9,8 +9,8 @@ resolvers += "Scala Snapshots" at "https://oss.sonatype.org/content/repositories
 //  if(pluginVersion == null)
 //    throw new RuntimeException("""|The system property 'plugin.version' is not defined.
 //                                 |Specify this property using the scriptedLaunchOpts -D.""".stripMargin)
-//  else addSbtPlugin("org.programmierportgruppe.sbt" %% "testreporter" % pluginVersion)
+//  else addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % pluginVersion)
 //}
 
-addSbtPlugin("org.programmierportgruppe.sbt" %% "testreporter" % "1.0.0")
+addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "1.0.0")
 
