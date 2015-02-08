@@ -35,7 +35,9 @@ Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or pr
 This will add the dependency to the plugin. The next step is to configure your build to actually use the reporter.
 The following will output the test results in target/test-reports:
 
-    testListeners <<= target.map(t => Seq(new org.programmiersportgruppe.sbt.testreporter.TabularTestReporter(t.getAbsolutePath)))
+    testListeners <<= target.map(t =>
+        Seq(new org.programmiersportgruppe.sbt.testreporter.TabularTestReporter(t.getAbsolutePath))
+    )
 
 Note that the line as shown is enough in a *.sbt file. In *.scala files (full configuration), you must collect the
 result of the expression into the settings of all projects that should write test reports.
