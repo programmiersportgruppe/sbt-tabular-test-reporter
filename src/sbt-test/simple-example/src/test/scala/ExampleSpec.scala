@@ -12,7 +12,7 @@ class ExampleSpec extends FunSuite with Matchers {
   }
 
   test("errors should be reported") {
-    throw new RuntimeException("My error")
+    throw new RuntimeException("My error\nWith a second line.   ")
   }
 
   test("test should take approximately 3 seconds") {

@@ -8,8 +8,8 @@ sort, awk and uniq.
 Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
     SUCCESS    0.015 ExampleSpec should_pass
-    FAILURE    0.017 ExampleSpec failure_should_be_reported
-    FAILURE      0.0 ExampleSpec errors_should_be_reported
+    FAILURE    0.017 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
+    FAILURE      0.0 ExampleSpec errors_should_be_reported My error
     SUCCESS    3.001 ExampleSpec test_should_take_approximately_3_seconds
     SUCCESS    1.002 ExampleSpec test_should_take_approximately_1_second
     IGNORED      0.0 ExampleSpec this_should_be_ignored
@@ -45,7 +45,6 @@ result of the expression into the settings of all projects that should write tes
 Open
 ====
 
-* How should we render details on test failures (without loosing the nice - single lineness)?
 * Should the hostname and the time be include in the file?
 * Is time stamping the filename the right solution or should we have an "archiving plugin"?
 * Investigate whether and how the time taken for tearDown and setUp is accounted for.

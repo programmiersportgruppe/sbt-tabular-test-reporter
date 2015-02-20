@@ -60,7 +60,19 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                         case TStatus.Pending => "PENDING"
                     }
 
-                Seq(statusText.padTo(7, ' '), time.reverse.padTo(8, ' ').reverse, className, name.replaceAll("\\s+", "_")).mkString(" ")
+                val error = if (e.throwable().isDefined) {
+                    e.throwable().get().getMessage.split("\n")(0)
+                } else {
+                    ""
+                }
+
+                Seq(
+                    statusText.padTo(7, ' '),
+                    time.reverse.padTo(8, ' ').reverse,
+                    className,
+                    name.replaceAll("\\s+", "_")
+                    , error
+                ).mkString(" ")
             }
         }
     }
