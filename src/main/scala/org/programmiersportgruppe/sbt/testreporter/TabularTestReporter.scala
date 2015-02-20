@@ -109,13 +109,14 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
     /** Does nothing, as we write each file after a suite is done. */
     override def doComplete(finalResult: TestResult.Value): Unit = {
+
         val timeStamp: String = new SimpleDateFormat("YMMdd-HHmmss").format(new Date())
         val path: String = new sbt.File(targetDir, s"test-results-${timeStamp}.txt").getAbsolutePath
         val out = new OutputStreamWriter(new FileOutputStream(path), "UTF-8")
         out.write(results.mkString("\n"))
         out.close()
 
-        val symlink = new File(targetDir, "test-results-latest.txt")
+        val symlink = new File(new File(outputDir), "test-results-latest.txt")
         if (symlink.exists()) {
             symlink.delete()
         }
