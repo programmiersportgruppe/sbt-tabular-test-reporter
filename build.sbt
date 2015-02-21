@@ -48,9 +48,7 @@ description := "A simple plugin that outputs tab separated test results."
 
 version := "1.0.0"
 
-crossScalaVersions := Seq("2.10.4", "2.11.4")
-
-scalaVersion := crossScalaVersions.value.head
+scalaVersion := "2.10.4"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "UTF8")
 
