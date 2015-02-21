@@ -46,7 +46,7 @@ organization := "org.programmiersportgruppe.sbt"
 
 description := "A simple plugin that outputs tab separated test results."
 
-version := "LOCAL-SNAPSHOT"
+version :=  sys.props.getOrElse("release.version", default = "LOCAL-SNAPSHOT")
 
 scalaVersion := "2.10.4"
 

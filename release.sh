@@ -23,7 +23,7 @@ git pull --rebase
 
 find . -name target -prune -exec rm -r {} \;
 
-sbt "set version in ThisBuild := \"${version}\"" +test +publishSigned
+sbt -Drelease.version=${version} +test +publishSigned
 
 tag="v${version}"
 
@@ -44,7 +44,7 @@ git commit -a -m "Releasing ${version}." || echo "Nothing to commit"
 
 git tag -f "${tag}" --annotate --message "${release_notes}"
 
-git push origin "${tag}" "${tag}:master"
+git push origin "${tag}" "release-${tag}:master"
 
 git checkout master
 git pull --rebase
