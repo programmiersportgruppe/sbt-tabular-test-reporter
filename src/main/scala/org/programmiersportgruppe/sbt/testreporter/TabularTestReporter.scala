@@ -17,9 +17,7 @@ import Keys._
 
 object TabularTestReporterPlugin extends AutoPlugin {
     override lazy val projectSettings = Seq(
-        testListeners <<= target.map(t => {
-            println("yo! this is the place where we configure");
-            Seq(new TabularTestReporter(t.getAbsolutePath))})
+        testListeners += new TabularTestReporter(target.value.getAbsolutePath)
     )
 
     override val trigger = AllRequirements

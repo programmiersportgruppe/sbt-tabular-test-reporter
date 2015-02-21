@@ -2,5 +2,7 @@ name := "Simple sbt Project"
 
 version := "0.1"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.0-M1"  % "test"
+scalaVersion := "2.11.5"
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4"  % "test"
 

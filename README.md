@@ -5,7 +5,7 @@ The Test Reporter plugin provides a test listener, TabularTestReporter that writ
 separated tabular format to a file, so that it is easy to analyse test results using standard unix tools, such as
 sort, awk and uniq.
 
-Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
+Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-tabular-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
     SUCCESS    0.015 ExampleSpec should_pass
     FAILURE    0.017 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
@@ -30,10 +30,11 @@ Get Started
 
 Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or project/plugins/build.sbt (project-specific):
 
-    addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "1.1.0")
+    addSbtPlugin("org.programmiersportgruppe.sbt" %% "tabulartestreporter" % "1.0.0")
 
 This will add the dependency to the plugin and also register the Test Reporter as a test listener, because it is an
 auto plugin.
+
 
 Open
 ====

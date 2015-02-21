@@ -3,7 +3,7 @@ import com.typesafe.sbt.SbtPgp._
 
 description := "An sbt plugin that produces nice test reports."
 
-homepage := Some(url("https://github.com/programmiersportgruppe/sbt-test-reporter"))
+homepage := Some(url("https://github.com/programmiersportgruppe/sbt-tabular-test-reporter"))
 
 publishMavenStyle := true
 
