@@ -24,9 +24,10 @@ There is also a symlink that links to the latest:
 
     test-results-latest.txt
 
-In addition to the text report, there is also html file with a table that supports header sorting:
+In addition to the text report, there is also html file with a table that supports header sorting, here sorted by
+test duration:
 
-![HTML Table Rendering](doc/html-report/png)
+![HTML Table Rendering](doc/html-report.png)
 
 
 Get Started
