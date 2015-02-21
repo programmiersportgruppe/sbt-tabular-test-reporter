@@ -25,8 +25,8 @@ pomExtra := (
     </license>
   </licenses>
     <scm>
-      <url>https://github.com/programmiersportgruppe</url>
-      <connection>scm:git:git@github.com:programmiersportgruppe/sbt-test-reporter.git</connection>
+      <url>https://github.com/programmiersportgruppe/sbt-tabular-test-reporter</url>
+      <connection>scm:git:git@github.com:programmiersportgruppe/sbt-tabular-test-reporter.git</connection>
     </scm>
     <developers>
       <developer>
@@ -40,11 +40,11 @@ useGpg := true
 
 sbtPlugin := true
 
-name := "testreporter"
+name := "tabulartestreporter"
 
 organization := "org.programmiersportgruppe.sbt"
 
-description := "A simple plugin that outputs tab separated test results."
+description := "A simple plugin that writes test results into a tabular format"
 
 version :=  sys.props.getOrElse("release.version", default = "LOCAL-SNAPSHOT")
 
