@@ -46,7 +46,7 @@ organization := "org.programmiersportgruppe.sbt"
 
 description := "A simple plugin that outputs tab separated test results."
 
-version := "1.0.0"
+version := "LOCAL-SNAPSHOT"
 
 scalaVersion := "2.10.4"
 

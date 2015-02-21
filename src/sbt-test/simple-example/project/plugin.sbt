@@ -1,5 +1,3 @@
-scalaVersion := "2.11.2"
-
 resolvers += "Scala Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 
@@ -12,5 +10,5 @@ resolvers += "Scala Snapshots" at "https://oss.sonatype.org/content/repositories
 //  else addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % pluginVersion)
 //}
 
-addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "1.0.0")
+addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "LOCAL-SNAPSHOT")
 
