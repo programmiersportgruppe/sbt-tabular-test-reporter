@@ -38,7 +38,18 @@ auto plugin.
 Open
 ====
 
-* Should the hostname and the time be include in the file?
-* Is time stamping the filename the right solution or should we have an "archiving plugin"?
-* Investigate whether and how the time taken for tearDown and setUp is accounted for.
+Features
+--------
+* Investigate whether and how the time taken for tearDown and setUp can be accounted for.
 * Make automatic testing with scripted work.
+* Make output format configurable, e.g. tab separated.
+
+Questions
+---------
+
+* Should the hostname be include in the file?
+* Should the the current time be included in the file?
+* Should the current commit and a flag indicating whether the working copy is clean be included?
+* Is time stamping the filename the right solution or should we have an "archiving plugin"
+  that copies files after a successful run into the archive folder?
+
