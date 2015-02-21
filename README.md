@@ -32,15 +32,8 @@ Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or pr
 
     addSbtPlugin("org.programmiersportgruppe.sbt" %% "testreporter" % "1.0.0")
 
-This will add the dependency to the plugin. The next step is to configure your build to actually use the reporter.
-The following will output the test results in target/test-reports:
-
-    testListeners <<= target.map(t =>
-        Seq(new org.programmiersportgruppe.sbt.testreporter.TabularTestReporter(t.getAbsolutePath))
-    )
-
-Note that the line as shown is enough in a *.sbt file. In *.scala files (full configuration), you must collect the
-result of the expression into the settings of all projects that should write test reports.
+This will add the dependency to the plugin and also register the Test Reporter as a test listener, because it is an
+auto plugin.
 
 Open
 ====
@@ -49,4 +42,3 @@ Open
 * Is time stamping the filename the right solution or should we have an "archiving plugin"?
 * Investigate whether and how the time taken for tearDown and setUp is accounted for.
 * Make automatic testing with scripted work.
-* Make it an auto plugin.

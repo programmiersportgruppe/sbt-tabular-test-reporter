@@ -12,6 +12,19 @@ import java.net.InetAddress
 import scala.collection.mutable.ListBuffer
 import sbt.testing.{Event => TEvent, Status => TStatus, Logger => TLogger, NestedTestSelector, TestSelector, AnnotatedFingerprint, SubclassFingerprint}
 
+import sbt._
+import Keys._
+
+object TabularTestReporterPlugin extends AutoPlugin {
+    override lazy val projectSettings = Seq(
+        testListeners <<= target.map(t => {
+            println("yo! this is the place where we configure");
+            Seq(new TabularTestReporter(t.getAbsolutePath))})
+    )
+
+    override val trigger = AllRequirements
+}
+
 class TabularTestReporter(val outputDir: String) extends TestsListener {
 
     /** The dir in which we put all result files. Is equal to the given dir + "/test-reports" */
