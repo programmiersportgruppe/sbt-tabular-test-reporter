@@ -60,7 +60,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                     case _ => "TOSTRING:" + e.selector().toString
                 }
 
-                val time = if (e.duration() < 0) "0.0" else (e.duration() / 1000.0).toString
+                val duration = if (e.duration() < 0) "0.0" else (e.duration() / 1000.0).toString
 
                 val statusText =
                     e.status() match {
@@ -81,9 +81,10 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
                 Seq(
                     statusText.padTo(7, ' '),
-                    time.reverse.padTo(8, ' ').reverse,
+                    duration.reverse.padTo(8, ' ').reverse,
                     className,
-                    name.replaceAll("\\s+", "_"), error
+                    name.replaceAll("\\s+", "_"),
+                    error
                 )
             }
         }
