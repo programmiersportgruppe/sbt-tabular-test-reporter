@@ -15,12 +15,12 @@ class ExampleSpec extends FunSuite with Matchers {
     throw new RuntimeException("My error\nWith a second line.   ")
   }
 
-  test("test should take approximately 3 seconds") {
-    Thread.sleep(3000)
+  test("test should take approximately 2 seconds") {
+    Thread.sleep(2000)
   }
 
-  test("test should take approximately 1 second") {
-    Thread.sleep(1000)
+  test("test should take approximately 0.5 seconds") {
+    Thread.sleep(500)
   }
 
   ignore("this should be ignored") {
