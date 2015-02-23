@@ -181,7 +181,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
         val textResultPath: String = new sbt.File(targetDir, s"test-results-${timeStamp}.txt").getAbsolutePath
         val htmlResultPath: String = new sbt.File(targetDir, s"test-results-${timeStamp}.html").getAbsolutePath
         val out = new OutputStreamWriter(new FileOutputStream(textResultPath), "UTF-8")
-        out.write(results.map(cols => cols.mkString(" ")).mkString("\n"))
+        out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
         out.close()
 
         scala.xml.XML.save(htmlResultPath, htmlReport)
