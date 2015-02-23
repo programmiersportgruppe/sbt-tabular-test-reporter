@@ -7,12 +7,12 @@ sort, awk and uniq.
 
 Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-tabular-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
-    SUCCESS    0.015 ExampleSpec should_pass
-    FAILURE    0.017 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
-    FAILURE      0.0 ExampleSpec errors_should_be_reported My error
-    SUCCESS    3.001 ExampleSpec test_should_take_approximately_3_seconds
-    SUCCESS    1.002 ExampleSpec test_should_take_approximately_1_second
-    IGNORED      0.0 ExampleSpec this_should_be_ignored
+    2015-02-23T00:22:37 SUCCESS    0.013 ExampleSpec should_pass
+    2015-02-23T00:22:37 FAILURE    0.023 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
+    2015-02-23T00:22:37 FAILURE      0.0 ExampleSpec errors_should_be_reported My error
+    2015-02-23T00:22:37 SUCCESS    2.001 ExampleSpec test_should_take_approximately_2_seconds
+    2015-02-23T00:22:37 SUCCESS    0.502 ExampleSpec test_should_take_approximately_0.5_seconds
+    2015-02-23T00:22:37 IGNORED      0.0 ExampleSpec this_should_be_ignored
 
 All the test results for a project are written into a single file, that has a time stamped filename, such as:
 
@@ -54,7 +54,6 @@ Questions
 ---------
 
 * Should the hostname be include in the file?
-* Should the the current time be included in the file?
 * Should the current commit and a flag indicating whether the working copy is clean be included?
 * Is time stamping the filename the right solution or should we have an "archiving plugin"
   that copies files after a successful run into the archive folder?

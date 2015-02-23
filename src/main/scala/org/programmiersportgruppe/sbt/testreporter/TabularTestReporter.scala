@@ -2,8 +2,8 @@ package org.programmiersportgruppe.sbt.testreporter
 
 import java.io.File
 import java.nio.file.{Paths, Files}
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.text.{DateFormat, SimpleDateFormat}
+import java.util.{TimeZone, Date}
 
 import _root_.sbt._
 import java.io._
@@ -27,6 +27,16 @@ object TabularTestReporterPlugin extends AutoPlugin {
 }
 
 class TabularTestReporter(val outputDir: String) extends TestsListener {
+    private val timeStamp: Date = new Date()
+
+    val timeStampFileName: String = new SimpleDateFormat("YMMdd-HHmmss").format(timeStamp)
+
+    val timeStampIsao8601 = {
+        //val tz = TimeZone.getTimeZone("UTC");
+        val df: DateFormat  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        //df.setTimeZone(tz)
+        df.format(timeStamp)
+    }
 
     /** The dir in which we put all result files. Is equal to the given dir + "/test-reports" */
     val targetDir = new File(outputDir + "/test-reports/")
@@ -81,6 +91,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                 }
 
                 Seq(
+                    timeStampIsao8601,
                     statusText.padTo(7, ' '),
                     duration.reverse.padTo(8, ' ').reverse,
                     className,
@@ -146,6 +157,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
             <table id="resultTable" class="tablesorter">
                 <thead>
                     <tr>
+                        <th>TimeStamp</th>
                         <th>Status</th>
                         <th>Duration</th>
                         <th>Suite</th>
@@ -180,10 +192,8 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
     /** Does nothing, as we write each file after a suite is done. */
     override def doComplete(finalResult: TestResult.Value): Unit = {
-
-        val timeStamp: String = new SimpleDateFormat("YMMdd-HHmmss").format(new Date())
-        val textResultPath: String = new sbt.File(targetDir, s"test-results-${timeStamp}.txt").getAbsolutePath
-        val htmlResultPath: String = new sbt.File(targetDir, s"test-results-${timeStamp}.html").getAbsolutePath
+        val textResultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.txt").getAbsolutePath
+        val htmlResultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.html").getAbsolutePath
         val out = new OutputStreamWriter(new FileOutputStream(textResultPath), "UTF-8")
         out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
         out.close()
