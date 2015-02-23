@@ -190,12 +190,12 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
         scala.xml.XML.save(htmlResultPath, htmlReport)
 
-        val symlink = new File(new File(outputDir), "test-results-latest.txt")
-        if (symlink.exists()) {
-            symlink.delete()
+        val symlink = new File(new File(outputDir), "test-results-latest.txt").toPath
+        if (Files.isSymbolicLink(symlink)) {
+            Files.delete(symlink)
         }
 
-        Files.createSymbolicLink(symlink.toPath, Paths.get(textResultPath))
+        Files.createSymbolicLink(symlink, Paths.get(textResultPath))
     }
 
     /** Returns None */
