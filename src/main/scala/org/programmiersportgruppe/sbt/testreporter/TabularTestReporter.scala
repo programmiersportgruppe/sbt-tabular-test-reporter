@@ -15,6 +15,7 @@ import sbt.testing.{Event => TEvent, Status => TStatus, Logger => TLogger, Neste
 import sbt._
 import Keys._
 
+import scala.util.DynamicVariable
 import scala.xml.{Unparsed, PCData, Text, Elem}
 
 object TabularTestReporterPlugin extends AutoPlugin {
@@ -91,7 +92,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
     }
 
     /** The currently running test suite */
-    var testSuite: TestSuite = null
+    var testSuite: DynamicVariable[TestSuite] = new DynamicVariable[TestSuite](null)
 
     /** Creates the output Dir */
     override def doInit() = {
@@ -102,12 +103,12 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
      * Starts a new, initially empty Suite with the given name.
      */
     override def startGroup(name: String) {
-        testSuite = new TestSuite(name)
+        testSuite.value = new TestSuite(name)
     }
 
     override def testEvent(event: TestEvent): Unit = {
         for (e <- event.detail) {
-            testSuite.addEvent(e)
+            testSuite.value.addEvent(e)
         }
     }
 
@@ -117,7 +118,9 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
     }
 
     override def endGroup(name: String, result: TestResult.Value) = {
-        results ++= testSuite.stop()
+        this.synchronized {
+            results ++= testSuite.value.stop()
+        }
     }
 
 
