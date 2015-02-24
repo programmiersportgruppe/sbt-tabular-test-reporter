@@ -14,20 +14,6 @@ Here is an example result for an example [test suite](https://github.com/program
     2015-02-23T00:22:37 SUCCESS    0.502 ExampleSpec test_should_take_approximately_0.5_seconds
     2015-02-23T00:22:37 IGNORED      0.0 ExampleSpec this_should_be_ignored
 
-All the test results for a project are written into a single file, that has a time stamped filename, such as:
-
-    test-results-20150207-130331.txt
-
-This helps analysing issues across build runs.
-
-There is also a symlink that links to the latest:
-
-    test-results-latest.txt
-
-In addition to the text report, there is also html file with a table that supports header sorting, here sorted by
-test duration:
-
-![HTML Table Rendering](doc/html-report.png)
 
 
 Get Started
@@ -39,6 +25,41 @@ Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or pr
 
 This will add the dependency to the plugin and also register the Test Reporter as a test listener, because it is an
 auto plugin.
+
+
+Analysing Results
+=================
+
+All the test results for a project are written into a single file, that has a time stamped filename,
+such as `target/test-reports/test-results-20150207-130331.txt`. There is also a convenient symlink to the latest
+test result: `target/test-results-latest.txt`.
+
+To find the three test cases that take the most time can be found trivially using the `sort` utility:
+
+~~~
+cat target/test-results-latest.txt \
+    | sort --numeric --reverse --key=3 \
+    | head -n 3
+~~~
+
+Issues across build runs can be analysed using `find`. The following example returns results for a single
+test case across build runs:
+
+~~~
+find target/test-reports/ -name "*.txt" \
+    | xargs cat \
+    | grep "AnotherSpec this_should_take_more_time"
+~~~
+
+This can be very helpful in analysing failure patterns or performance degradation.
+
+More Features
+=============
+
+In addition to the text report, there is also html file with a table that supports header sorting, here sorted by
+test duration:
+
+![HTML Table Rendering](doc/html-report.png)
 
 
 Open
