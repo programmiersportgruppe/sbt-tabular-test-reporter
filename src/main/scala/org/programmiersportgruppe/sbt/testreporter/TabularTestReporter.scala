@@ -198,7 +198,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
         out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
         out.close()
 
-        scala.xml.XML.save(htmlResultPath, htmlReport)
+        scala.xml.XML.save(htmlResultPath, htmlReport, enc = "UTF-8")
 
         val symlink = new File(new File(outputDir), "test-results-latest.txt").toPath
         if (Files.isSymbolicLink(symlink)) {
