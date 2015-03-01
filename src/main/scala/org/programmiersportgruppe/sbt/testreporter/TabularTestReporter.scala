@@ -49,7 +49,6 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
     class TestSuite(val suiteName: String) {
         val events: ListBuffer[TEvent] = new ListBuffer()
         val start = System.currentTimeMillis
-        var end = System.currentTimeMillis
 
 
         def addEvent(e: TEvent) = events += e
@@ -59,7 +58,15 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
          * All tests collected so far.
          */
         def stop(): Seq[Seq[String]] = {
-            val duration = events.foldLeft(0L)((acc, e) => if (e.duration() < 0) acc else acc + e.duration())
+            var end = System.currentTimeMillis
+
+            val durationSetup = {
+                val totalDurationTestsWithSetup = end - start
+                val totalDurationTestsWithoutSetup = events.map(_.duration).sum
+                totalDurationTestsWithSetup - totalDurationTestsWithoutSetup
+            }
+
+            val numberOfTestsRun = events.filterNot( event =>Set(TStatus.Ignored, TStatus.Skipped).contains(event.status)).length
 
             for (e <- events) yield {
 
@@ -71,7 +78,8 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                     case _ => "TOSTRING:" + e.selector().toString
                 }
 
-                val duration = if (e.duration() < 0) "0.0" else (e.duration() / 1000.0).toString
+                val durationWithSetup: Double = if (e.duration() <0 ) 0
+                                                    else  e.duration() + (durationSetup.toDouble / numberOfTestsRun)
 
                 val statusText =
                     e.status() match {
@@ -93,10 +101,12 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                 Seq(
                     timeStampIsao8601,
                     statusText.padTo(7, ' '),
-                    duration.reverse.padTo(8, ' ').reverse,
+                    "%8.3f".format(durationWithSetup / 1000.0),
+                    "%8.3f".format(math.max(0,e.duration()) / 1000.0),
                     className,
                     name.replaceAll("\\s+", "_"),
                     error
+
                 )
             }
         }
@@ -160,6 +170,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                         <th>TimeStamp</th>
                         <th>Status</th>
                         <th>Duration</th>
+                        <th>Duration w/o Setup</th>
                         <th>Suite</th>
                         <th>Name</th>
                         <th>Failure Msg</th>

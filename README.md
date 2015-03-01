@@ -7,13 +7,12 @@ sort, awk and uniq.
 
 Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-tabular-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
-    2015-02-23T00:22:37 SUCCESS    0.013 ExampleSpec should_pass
-    2015-02-23T00:22:37 FAILURE    0.023 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
-    2015-02-23T00:22:37 FAILURE      0.0 ExampleSpec errors_should_be_reported My error
-    2015-02-23T00:22:37 SUCCESS    2.001 ExampleSpec test_should_take_approximately_2_seconds
-    2015-02-23T00:22:37 SUCCESS    0.502 ExampleSpec test_should_take_approximately_0.5_seconds
-    2015-02-23T00:22:37 IGNORED      0.0 ExampleSpec this_should_be_ignored
-
+    2015-03-01T10:00:30 SUCCESS    0.183    0.013 ExampleSpec should_pass
+    2015-03-01T10:00:30 FAILURE    0.191    0.023 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
+    2015-03-01T10:00:30 FAILURE    0.166    0.000 ExampleSpec errors_should_be_reported My error
+    2015-03-01T10:00:30 SUCCESS    2.166    2.001 ExampleSpec test_should_take_approximately_2_seconds
+    2015-03-01T10:00:30 SUCCESS    0.666    0.502 ExampleSpec test_should_take_approximately_0.5_seconds
+    2015-03-01T10:00:30 IGNORED    0.000    0.000 ExampleSpec this_should_be_ignored
 
 
 Get Started
@@ -34,6 +33,23 @@ All the test results for a project are written into a single file, that has a ti
 such as `target/test-reports/test-results-20150207-130331.txt`. There is also a convenient symlink to the latest
 test result: `target/test-results-latest.txt`.
 
+
+Format
+------
+
+The table has the following columns:
+
+1. A timestamp that conforms to this strftime format `%Y-%m-%dT%H:%M:%S`
+2. The outcome (SUCCESS, FAILURE, IGNORED, ERROR)
+3. The duration of the test case including the setup time distributed equally across all tests in a suite
+4. The duration of the test case without setup time
+5. The test suite name
+6. The name of the test case
+7. Optionally the failure message
+
+Examples
+--------
+
 To find the three test cases that take the most time can be found trivially using the `sort` utility:
 
 ~~~
@@ -53,6 +69,7 @@ find target/test-reports/ -name "*.txt" \
 
 This can be very helpful in analysing failure patterns or performance degradation.
 
+
 More Features
 =============
 
@@ -67,7 +84,7 @@ Open
 
 Features
 --------
-* Investigate whether and how the time taken for tearDown and setUp can be accounted for.
+
 * Make automatic testing with scripted work.
 * Make output format configurable, e.g. tab separated.
 
