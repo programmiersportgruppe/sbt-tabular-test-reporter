@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/programmiersportgruppe/sbt-tabular-test-reporter.svg?branch=master)](https://travis-ci.org/programmiersportgruppe/sbt-tabular-test-reporter)
+
 What it Does
 ============
 
