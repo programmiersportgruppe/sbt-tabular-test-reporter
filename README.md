@@ -3,11 +3,10 @@
 What it Does
 ============
 
-The Test Reporter plugin provides a test listener, TabularTestReporter that writes test results in a whitespace
-separated tabular format to a file, so that it is easy to analyse test results using standard unix tools, such as
+The Tabular Test Reporter plugin provides a test listener, `TabularTestReporter`, that writes test results in a whitespace-separated tabular format to a file. This makes it easy to analyse test results using standard unix tools, such as
 sort, awk and uniq.
 
-Here is an example result for an example [test suite](https://github.com/programmiersportgruppe/sbt-tabular-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
+Here is an example result for an [example test suite](https://github.com/programmiersportgruppe/sbt-tabular-test-reporter/blob/master/src/sbt-test/simple-example/src/test/scala/ExampleSpec.scala):
 
     2015-03-01T10:00:30 SUCCESS    0.183    0.013 ExampleSpec should_pass
     2015-03-01T10:00:30 FAILURE    0.191    0.023 ExampleSpec failure_should_be_reported "[A]" was not equal to "[B]"
@@ -24,14 +23,14 @@ Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or pr
 
     addSbtPlugin("org.programmiersportgruppe.sbt" %% "tabulartestreporter" % "2.0.0")
 
-This will add the dependency to the plugin and also register the Test Reporter as a test listener, because it is an
-auto plugin.
+This will add the plugin dependency to your project.
+Tabular Test Reporter is an auto plugin, and automatically registers a `TabularTestReporter` as a test listener, so no additional configuration is required.
 
 
 Analysing Results
 =================
 
-All the test results for a project are written into a single file, that has a time stamped filename,
+All the test results for a project are written into a single file that has a timestamped filename
 such as `target/test-reports/test-results-20150207-130331.txt`. There is also a convenient symlink to the latest
 test result: `target/test-results-latest.txt`.
 
@@ -45,7 +44,7 @@ The table has the following columns:
 2. The outcome (SUCCESS, FAILURE, IGNORED, ERROR)
 3. The duration of the test case including the setup time distributed equally across all tests in a suite
 4. The duration of the test case without setup time
-5. The test suite name
+5. The name of the test suite
 6. The name of the test case
 7. Optionally the failure message
 
@@ -75,8 +74,8 @@ This can be very helpful in analysing failure patterns or performance degradatio
 More Features
 =============
 
-In addition to the text report, there is also html file with a table that supports header sorting, here sorted by
-test duration:
+In addition to the text report, an html file is also generated containing a table that supports sorting by a colunm when its header is clicked.
+Here is an example table sorted by test duration:
 
 ![HTML Table Rendering](doc/html-report.png)
 
@@ -88,13 +87,13 @@ Features
 --------
 
 * Make automatic testing with scripted work.
-* Make output format configurable, e.g. tab separated.
+* Make output format configurable, e.g. tab-separated.
 
 Questions
 ---------
 
-* Should the hostname be include in the file?
+* Should the hostname be included in the file?
 * Should the current commit and a flag indicating whether the working copy is clean be included?
-* Is time stamping the filename the right solution or should we have an "archiving plugin"
+* Is timestamping the filename the right solution or should we have an "archiving plugin"
   that copies files after a successful run into the archive folder?
 
