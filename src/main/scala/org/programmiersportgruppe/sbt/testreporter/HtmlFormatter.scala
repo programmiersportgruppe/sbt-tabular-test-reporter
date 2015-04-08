@@ -10,13 +10,14 @@ class HtmlFormatter (results: Seq[Seq[String]]){
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/2.2.4/tablesort.min.js"></script>
                 <style>
                     {Unparsed("""
+                body {font-family: Arial, Helvetica, sans-serif;}
                 table {width:100%;}
                 table {border-spacing:0; background-color:#eee; padding:4px; border-collapse:collapse;}
                 table td {border-width:1px 0; border-style:solid; border-color:#888;}
                 table th, table td {max-width:1000px; font-size:90%;padding: 0.4em;}
                 table thead {background-color:white;text-align:left}
                 tbody tr:nth-child(even) {background-color:#fff;}
-                .ignored {color:#F2F207;}
+                .ignored {color:#E2B207;}
                 .failure {color:#F21807;}
                 .success {color:#60D606;}
                               """)}
@@ -37,12 +38,17 @@ class HtmlFormatter (results: Seq[Seq[String]]){
                     </thead>
                     <tbody>{
                         results.map( row => {
-                            val cssClass = row(0).trim.toLowerCase
+                            val cssClass = row(1).trim.toLowerCase
                             <tr>
-                                <td class={cssClass}>
+                                <td>
                                     {row(0)}
                                 </td>
-                                {row.tail.map(col =>
+
+                                <td class={cssClass}>
+                                    {row(1)}
+                                </td>
+
+                                {row.tail.tail.map(col =>
                                 <td>
                                     {col}
                                 </td>
