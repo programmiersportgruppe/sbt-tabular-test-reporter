@@ -52,6 +52,7 @@ scalaVersion := "2.10.4"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "UTF8")
 
+updateOptions := updateOptions.value.withCachedResolution(true)
 
 //ScriptedPlugin.scriptedSettings
 //
