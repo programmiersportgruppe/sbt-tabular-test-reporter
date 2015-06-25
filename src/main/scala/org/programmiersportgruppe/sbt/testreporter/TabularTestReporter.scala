@@ -59,11 +59,14 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
             val durationSetup = {
                 val totalDurationTestsWithSetup = end - start
-                val totalDurationTestsWithoutSetup = events.map(_.duration).sum
+                val totalDurationTestsWithoutSetup = events.map(_.duration).filter(_ >= 0).sum
                 totalDurationTestsWithSetup - totalDurationTestsWithoutSetup
             }
 
-            val numberOfTestsRun = events.filterNot( event =>Set(TStatus.Ignored, TStatus.Skipped).contains(event.status)).length
+            def wasRun(event: TEvent): Boolean = !Set(TStatus.Ignored, TStatus.Skipped).contains(event.status)
+
+            val numberOfTestsRun = events.count(wasRun)
+            val setupTimePerTestRun = durationSetup.toDouble / numberOfTestsRun
 
             for (e <- events) yield {
 
@@ -76,19 +79,10 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                     case _ => "TOSTRING:" + e.selector().toString
                 }
 
-                val durationWithSetup: Double = if (e.duration() <0 ) 0
-                                                    else  e.duration() + (durationSetup.toDouble / numberOfTestsRun)
+                val rawDuration = math.max(0, e.duration)  // e.duration can be -1, if no duration was available
+                val durationWithSetup: Double = rawDuration + (if (wasRun(e)) setupTimePerTestRun else 0)
 
-                val statusText =
-                    e.status() match {
-                        case TStatus.Success => "SUCCESS"
-                        case TStatus.Error => "ERROR"
-                        case TStatus.Failure => "FAILURE"
-                        case TStatus.Skipped => "SKIPPED"
-                        case TStatus.Ignored => "IGNORED"
-                        case TStatus.Canceled => "CANCELED"
-                        case TStatus.Pending => "PENDING"
-                    }
+                val statusText = e.status.toString.toUpperCase
 
                 val error = e.throwable match {
                     case t if t.isDefined =>
@@ -101,11 +95,10 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                     timeStampIsao8601,
                     statusText.padTo(7, ' '),
                     "%8.3f".format(durationWithSetup / 1000.0),
-                    "%8.3f".format(math.max(0,e.duration()) / 1000.0),
+                    "%8.3f".format(rawDuration / 1000.0),
                     className,
                     name.replaceAll("\\s+", "_"),
                     error
-
                 )
             }
         }
@@ -142,12 +135,12 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
             results ++= testSuite.value.stop()
         }
     }
-    
+
 
     def createOrUpdateSymLink(resultPath: String, linkName: String) : Unit = {
         val symlink = new File(new File(outputDir), linkName).toPath
         if (Files.isSymbolicLink(symlink)) {
-        Files.delete (symlink)
+            Files.delete(symlink)
         }
 
         Files.createSymbolicLink(symlink, Paths.get(resultPath))
@@ -166,7 +159,6 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
         createOrUpdateSymLink(textResultPath, "test-results-latest.txt")
         createOrUpdateSymLink(htmlResultPath, "test-results-latest.html")
-
     }
 
     /** Returns None */
