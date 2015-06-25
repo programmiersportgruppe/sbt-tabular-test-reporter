@@ -5,18 +5,15 @@ import java.nio.file.{Paths, Files}
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.{TimeZone, Date}
 
-import _root_.sbt._
 import java.io._
-import java.net.InetAddress
 
 import scala.collection.mutable.ListBuffer
-import sbt.testing.{Event => TEvent, Status => TStatus, Logger => TLogger, NestedTestSelector, TestSelector, AnnotatedFingerprint, SubclassFingerprint}
+import sbt.testing.{Event => TEvent, Status => TStatus, _}
 
 import sbt._
 import Keys._
 
 import scala.util.DynamicVariable
-import scala.xml.{Unparsed, PCData, Text, Elem}
 
 object TabularTestReporterPlugin extends AutoPlugin {
     override lazy val projectSettings = Seq(
@@ -75,6 +72,7 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                 val name = e.selector match {
                     case t: TestSelector => t.testName()
                     case n: NestedTestSelector => n.testName()
+                    case _: SuiteSelector => "(suite level failure)"
                     case _ => "TOSTRING:" + e.selector().toString
                 }
 
@@ -92,10 +90,11 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
                         case TStatus.Pending => "PENDING"
                     }
 
-                val error = if (e.throwable().isDefined) {
-                    e.throwable().get().getMessage.split("\n")(0)
-                } else {
-                    ""
+                val error = e.throwable match {
+                    case t if t.isDefined =>
+                        Option(t.get.getMessage).fold(t.get.getClass.getName)(_.split("\n")(0))
+                    case _ =>
+                        ""
                 }
 
                 Seq(

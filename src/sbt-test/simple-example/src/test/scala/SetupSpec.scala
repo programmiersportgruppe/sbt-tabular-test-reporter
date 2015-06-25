@@ -4,7 +4,7 @@ class SetupSpec extends FunSuite with Matchers with  BeforeAndAfterAll with Befo
 
     override def beforeAll() = { Thread.sleep(3200) }
 
-    override def afterAll() = { Thread.sleep(1600) }
+    override def afterAll() = { Thread.sleep(1600); throw new RuntimeException(null: String) }
 
     before { Thread.sleep(800) }
 
