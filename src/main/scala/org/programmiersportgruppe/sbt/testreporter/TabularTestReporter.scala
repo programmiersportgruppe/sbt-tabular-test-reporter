@@ -138,12 +138,17 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
 
     def createOrUpdateSymLink(resultPath: String, linkName: String) : Unit = {
-        val symlink = new File(new File(outputDir), linkName).toPath
-        if (Files.isSymbolicLink(symlink)) {
-            Files.delete(symlink)
-        }
+        try {
 
-        Files.createSymbolicLink(symlink, Paths.get(resultPath))
+            val symlink = new File(new File(outputDir), linkName).toPath
+            if (Files.isSymbolicLink(symlink)) {
+                Files.delete(symlink)
+            }
+
+            Files.createSymbolicLink(symlink, Paths.get(resultPath))
+        } catch {case ex: java.nio.file.FileSystemException => (
+
+            )}
     }
 
     /** Does nothing, as we write each file after a suite is done. */
