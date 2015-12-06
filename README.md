@@ -21,7 +21,7 @@ Get Started
 
 Add the following lines to either ~/.sbt/plugins/build.sbt (user-specific) or project/plugins/build.sbt (project-specific):
 
-    addSbtPlugin("org.programmiersportgruppe.sbt" %% "tabulartestreporter" % "2.2.0")
+    addSbtPlugin("org.programmiersportgruppe.sbt" %% "tabulartestreporter" % "2.2.1")
 
 This will add the plugin dependency to your project.
 Tabular Test Reporter is an auto plugin, and automatically registers a `TabularTestReporter` as a test listener, so no additional configuration is required.
