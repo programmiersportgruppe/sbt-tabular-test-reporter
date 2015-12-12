@@ -7,6 +7,8 @@ import java.util.{TimeZone, Date}
 
 import java.io._
 
+import org.programmiersportgruppe.sbt.testreporter.ReportFormat._
+
 import scala.collection.mutable.ListBuffer
 import sbt.testing.{Event => TEvent, Status => TStatus, _}
 
@@ -16,14 +18,23 @@ import Keys._
 import scala.util.DynamicVariable
 
 object TabularTestReporterPlugin extends AutoPlugin {
+
+    object autoImport {
+        val Html = ReportFormat.Html
+        val WhiteSpaceDelimited = ReportFormat.WhiteSpaceDelimited
+
+        lazy val testReportFormats = settingKey[Set[ReportFormat]]("report formats")
+    }
+
     override lazy val projectSettings = Seq(
-        testListeners += new TabularTestReporter(target.value.getAbsolutePath)
+        autoImport.testReportFormats := Set(WhiteSpaceDelimited, Html),
+        testListeners += new TabularTestReporter(target.value.getAbsolutePath, autoImport.testReportFormats.value)
     )
 
     override val trigger = AllRequirements
 }
 
-class TabularTestReporter(val outputDir: String) extends TestsListener {
+class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) extends TestsListener {
     private val timeStamp: Date = new Date()
 
     val timeStampFileName: String = new SimpleDateFormat("YMMdd-HHmmss").format(timeStamp)
@@ -153,17 +164,22 @@ class TabularTestReporter(val outputDir: String) extends TestsListener {
 
     /** Does nothing, as we write each file after a suite is done. */
     override def doComplete(finalResult: TestResult.Value): Unit = {
-        val textResultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.txt").getAbsolutePath
-        val htmlResultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.html").getAbsolutePath
-        val out = new OutputStreamWriter(new FileOutputStream(textResultPath), "UTF-8")
-        out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
-        out.close()
+        println("formats: " + formats)
+        formats.foreach((format: ReportFormat) =>{
 
-
-        scala.xml.XML.save(htmlResultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")
-
-        createOrUpdateSymLink(textResultPath, "test-results-latest.txt")
-        createOrUpdateSymLink(htmlResultPath, "test-results-latest.html")
+            val resultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.${format.extension}").getAbsolutePath
+            format match {
+                case WhiteSpaceDelimited => {
+                    val out = new OutputStreamWriter(new FileOutputStream(resultPath), "UTF-8")
+                    out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
+                    out.close()
+                }
+                case Html => {
+                    scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")
+                }
+            }
+            createOrUpdateSymLink(resultPath, s"test-results-latest.${format.extension}")
+        } )
     }
 
     /** Returns None */
