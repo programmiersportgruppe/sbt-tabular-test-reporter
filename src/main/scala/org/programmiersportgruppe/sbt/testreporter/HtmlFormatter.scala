@@ -20,6 +20,37 @@ class HtmlFormatter (results: Seq[Seq[String]]){
                 .ignored {color:#E2B207;}
                 .failure {color:#F21807;}
                 .success {color:#60D606;}
+                th.sort-header::-moz-selection { background:transparent; }
+                th.sort-header::selection      { background:transparent; }
+                th.sort-header {
+                    cursor:pointer;
+                }
+                th.sort-header::-moz-selection,
+                th.sort-header::selection {
+                    background:transparent;
+                }
+                table th.sort-header:after {
+                    content:'';
+                    float:right;
+                    margin-top:7px;
+                    border-width:0 4px 4px;
+                    border-style:solid;
+                    border-color:#404040 transparent;
+                    visibility:hidden;
+                }
+                table th.sort-header:hover:after {
+                    visibility:visible;
+                }
+                table th.sort-up:after,
+                table th.sort-down:after,
+                table th.sort-down:hover:after {
+                    visibility:visible;
+                    opacity:0.4;
+                }
+                table th.sort-up:after {
+                    border-bottom:none;
+                    border-width:4px 4px 0;
+                }
                               """)}
                 </style>
             </head>
