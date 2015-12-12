@@ -3,7 +3,7 @@ package org.programmiersportgruppe.sbt.testreporter
 import scala.xml.{Unparsed, Elem}
 
 
-class HtmlFormatter (results: Seq[Seq[String]]){
+class HtmlFormatter (results: Seq[TestSummary]){
     def htmlReport: Elem =
         <html>
             <head>
@@ -68,7 +68,7 @@ class HtmlFormatter (results: Seq[Seq[String]]){
                         </tr>
                     </thead>
                     <tbody>{
-                        results.map( row => {
+                        results.map(_.toColumns).map( row => {
                             val cssClass = row(1).trim.toLowerCase
                             <tr>
                                 <td>

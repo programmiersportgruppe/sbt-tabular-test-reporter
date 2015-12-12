@@ -16,6 +16,7 @@ import sbt._
 import Keys._
 
 import scala.util.DynamicVariable
+import Utilities._
 
 object TabularTestReporterPlugin extends AutoPlugin {
 
@@ -49,7 +50,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
     /** The dir in which we put all result files. Is equal to the given dir + "/test-reports" */
     val targetDir = new File(outputDir + "/test-reports/")
 
-    var results: Seq[Seq[String]] = Seq()
+    var results: Seq[TestSummary] = Seq()
 
     /**
      * Gathers data for one Test Suite. We map test groups to TestSuites.
@@ -65,7 +66,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
          * Stops the time measuring and emits the results for
          * All tests collected so far.
          */
-        def stop(): Seq[Seq[String]] = {
+        def stop(): Seq[TestSummary] = {
             var end = System.currentTimeMillis
 
             val durationSetup = {
@@ -102,18 +103,19 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                         ""
                 }
 
-                Seq(
-                    timeStampIsao8601,
-                    statusText.padTo(7, ' '),
-                    "%8.3f".format(durationWithSetup / 1000.0),
-                    "%8.3f".format(rawDuration / 1000.0),
+                TestSummary(
+                    timeStamp,
+                    statusText,
+                    durationWithSetup / 1000.0,
+                    rawDuration / 1000.0,
                     className,
-                    name.replaceAll("\\s+", "_"),
+                    name,
                     error
                 )
             }
         }
     }
+
 
     /** The currently running test suite */
     var testSuite: DynamicVariable[TestSuite] = new DynamicVariable[TestSuite](null)
@@ -147,7 +149,6 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
         }
     }
 
-
     def createOrUpdateSymLink(resultPath: String, linkName: String) : Unit = {
         try {
 
@@ -170,9 +171,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
             val resultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.${format.extension}").getAbsolutePath
             format match {
                 case WhiteSpaceDelimited => {
-                    val out = new OutputStreamWriter(new FileOutputStream(resultPath), "UTF-8")
-                    out.write(results.map(cols => cols.mkString(" ")).mkString("\n") + "\n")
-                    out.close()
+                    (results.map(result => result.toColumns.mkString(" ")).mkString("\n") + "\n").save(resultPath)
                 }
                 case Html => {
                     scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")
