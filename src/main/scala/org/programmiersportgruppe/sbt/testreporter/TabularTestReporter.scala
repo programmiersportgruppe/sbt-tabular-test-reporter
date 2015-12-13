@@ -111,6 +111,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                     rawDuration / 1000.0,
                     className,
                     name,
+                    new Date(),
                     error
                 )
             }
