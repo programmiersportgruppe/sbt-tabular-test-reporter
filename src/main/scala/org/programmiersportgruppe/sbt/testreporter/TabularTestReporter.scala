@@ -29,7 +29,7 @@ object TabularTestReporterPlugin extends AutoPlugin {
     }
 
     override lazy val projectSettings = Seq(
-        autoImport.testReportFormats := Set(WhiteSpaceDelimited, Html),
+        autoImport.testReportFormats := Set(WhiteSpaceDelimited, Html, Json),
         testListeners += new TabularTestReporter(target.value.getAbsolutePath, autoImport.testReportFormats.value)
     )
 
@@ -107,7 +107,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
 
                 val errorMessage = e.throwable match {
                     case t if t.isDefined =>
-                        Option(t.get.getMessage).fold(t.get.getClass.getName)(_.split("\n")(0))
+                        Option(t.get.getMessage).fold(t.get.getClass.getName)(_.split("\n")(0)) // this logic should move up
                     case _ =>
                         ""
                 }
@@ -149,6 +149,22 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
     }
 
     override def endGroup(name: String, t: Throwable) = {
+        this.synchronized {
+            val timestamp = new Date()
+            val summary: TestSummary =TestSummary(
+                timestamp,
+                "ERROR",
+                0,
+                0,
+                name,
+                "(suite level failure)",
+                timestamp,
+                Option(t.getMessage).map(_.split("\n")(0)).getOrElse(t.getClass.getName), // this logic should move up
+                t.stackTrace
+            )
+
+            results = results :+ summary
+        }
         System.err.println("Throwable escaped the test run of '" + name + "': " + t)
         t.printStackTrace(System.err)
     }
