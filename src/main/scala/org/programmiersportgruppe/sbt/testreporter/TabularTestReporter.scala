@@ -23,6 +23,7 @@ object TabularTestReporterPlugin extends AutoPlugin {
     object autoImport {
         val Html = ReportFormat.Html
         val WhiteSpaceDelimited = ReportFormat.WhiteSpaceDelimited
+        val Json = ReportFormat.Json
 
         lazy val testReportFormats = settingKey[Set[ReportFormat]]("report formats")
     }
@@ -173,6 +174,9 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                     (results.map(result => result.toColumns.mkString(" ")).mkString("\n") + "\n").save(resultPath)
                 }
                 case Html => {scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")}
+                case Json => {
+                    (results.map(_.toJson).mkString("\n") + "\n").save(resultPath)
+                }
             }
             createOrUpdateSymLink(resultPath, s"test-results-latest.${format.extension}")
         } )

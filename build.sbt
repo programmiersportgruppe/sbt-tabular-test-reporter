@@ -54,6 +54,8 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "UTF8")
 
 updateOptions := updateOptions.value.withCachedResolution(true)
 
+libraryDependencies += "io.spray" %%  "spray-json" % "1.3.2"
+
 //ScriptedPlugin.scriptedSettings
 //
 //scriptedLaunchOpts := { scriptedLaunchOpts.value ++
