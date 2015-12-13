@@ -14,7 +14,8 @@ case class TestSummary(
     suiteName: String,
     name: String,
     testCaseTime: Date,
-    errorMessage: String
+    errorMessage: String,
+    stackTrace: String
 ) {
     def toColumns: Seq[String] =
     Seq(
@@ -37,7 +38,8 @@ case class TestSummary(
             "suite" -> JsString(suiteName),
             "test" -> JsString(name),
             "test-timestamp" -> JsString(testCaseTime.toIso8601),
-            "errorMessage" -> JsString(errorMessage)
+            "errorMessage" -> JsString(errorMessage),
+            "stackTrace" -> JsString(stackTrace)
         ).toMap).compactPrint
     }
 }

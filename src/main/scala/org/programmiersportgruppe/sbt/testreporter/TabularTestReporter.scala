@@ -97,7 +97,20 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
 
                 val statusText = e.status.toString.toUpperCase
 
-                val error = e.throwable match {
+                val exceptionOpt: Option[Throwable] = if (e.throwable.isDefined) {
+                    Some(e.throwable.get)
+                } else {
+                    None
+                }
+
+                val stackTrace = exceptionOpt.map(ex => {
+                    val b = new ByteArrayOutputStream()
+                    val p = new PrintStream(b)
+                    ex.printStackTrace(p)
+                    new String(b.toByteArray, "UTF-8")
+                    })
+
+                val errorMessage = e.throwable match {
                     case t if t.isDefined =>
                         Option(t.get.getMessage).fold(t.get.getClass.getName)(_.split("\n")(0))
                     case _ =>
@@ -112,7 +125,8 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                     className,
                     name,
                     new Date(),
-                    error
+                    errorMessage,
+                    stackTrace.getOrElse("")
                 )
             }
         }
