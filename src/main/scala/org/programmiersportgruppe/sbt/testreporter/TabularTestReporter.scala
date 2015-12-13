@@ -174,7 +174,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                 case WhiteSpaceDelimited => {
                     (results.map(result => result.toColumns.mkString(" ")).mkString("\n") + "\n").save(resultPath)
                 }
-                case Html => {scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")}
+                case Html => {scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8", xmlDecl = true)}
                 case Json => {
                     (results.map(_.toJson).mkString("\n") + "\n").save(resultPath)
                 }

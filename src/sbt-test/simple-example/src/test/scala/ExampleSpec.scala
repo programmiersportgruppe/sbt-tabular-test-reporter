@@ -11,6 +11,10 @@ class ExampleSpec extends FunSuite with Matchers {
     "A" should be ("B")
   }
 
+  test("failure with fancy characters") {
+    "ç" should be ("Ä")
+                                     }
+
   test("errors should be reported") {
     throw new RuntimeException("My error\nWith a second line.   ")
   }
