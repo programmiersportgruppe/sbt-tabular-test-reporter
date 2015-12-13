@@ -59,7 +59,6 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
         val events: ListBuffer[TEvent] = new ListBuffer()
         val start = System.currentTimeMillis
 
-
         def addEvent(e: TEvent) = events += e
 
         /**
@@ -78,6 +77,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
             def wasRun(event: TEvent): Boolean = !Set(TStatus.Ignored, TStatus.Skipped).contains(event.status)
 
             val numberOfTestsRun = events.count(wasRun)
+
             val setupTimePerTestRun = durationSetup.toDouble / numberOfTestsRun
 
             for (e <- events) yield {
@@ -115,7 +115,6 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
             }
         }
     }
-
 
     /** The currently running test suite */
     var testSuite: DynamicVariable[TestSuite] = new DynamicVariable[TestSuite](null)
@@ -173,9 +172,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                 case WhiteSpaceDelimited => {
                     (results.map(result => result.toColumns.mkString(" ")).mkString("\n") + "\n").save(resultPath)
                 }
-                case Html => {
-                    scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")
-                }
+                case Html => {scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8")}
             }
             createOrUpdateSymLink(resultPath, s"test-results-latest.${format.extension}")
         } )

@@ -3,6 +3,7 @@ package org.programmiersportgruppe.sbt.testreporter
 import java.util.Date
 import Utilities._
 
+/* Represents the result of a single test case */
 case class TestSummary(
     timestamp: Date,
     status: String,
