@@ -1,11 +1,19 @@
 package org.programmiersportgruppe.sbt.testreporter
 
-import java.io.{FileOutputStream, OutputStreamWriter}
+import java.io.{PrintStream, ByteArrayOutputStream, FileOutputStream, OutputStreamWriter}
 import java.text.{SimpleDateFormat, DateFormat}
 import java.util.Date
 
 object Utilities {
 
+    implicit class AugmentedThrowable(t: Throwable) {
+        def stackTrace: String = {
+            val b = new ByteArrayOutputStream()
+            val p = new PrintStream(b)
+            t.printStackTrace(p)
+            new String(b.toByteArray, "UTF-8")
+        }
+    }
 
     implicit class AugmentedString(s: String) {
         def save(path: String): Unit = {

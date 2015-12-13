@@ -103,12 +103,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                     None
                 }
 
-                val stackTrace = exceptionOpt.map(ex => {
-                    val b = new ByteArrayOutputStream()
-                    val p = new PrintStream(b)
-                    ex.printStackTrace(p)
-                    new String(b.toByteArray, "UTF-8")
-                    })
+                val stackTrace = exceptionOpt.map(ex => ex.stackTrace)
 
                 val errorMessage = e.throwable match {
                     case t if t.isDefined =>
