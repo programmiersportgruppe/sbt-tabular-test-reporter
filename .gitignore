@@ -1,3 +1,4 @@
 target/
 .idea_modules/
 project/gpg.sbt
+.idea/
