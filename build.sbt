@@ -48,7 +48,7 @@ description := "A simple plugin that writes test results into a tabular format"
 
 version :=  sys.props.getOrElse("release.version", default = "LOCAL-SNAPSHOT")
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.12.8"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-encoding", "UTF8")
 
@@ -56,7 +56,7 @@ updateOptions := updateOptions.value.withCachedResolution(true)
 
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.2"
 
-//ScriptedPlugin.scriptedSettings
+//ScriptedPlugin.globalSettings
 //
 //scriptedLaunchOpts := { scriptedLaunchOpts.value ++
 //  Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value)

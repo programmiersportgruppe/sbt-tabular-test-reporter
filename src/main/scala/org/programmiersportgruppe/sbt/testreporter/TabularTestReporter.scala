@@ -1,22 +1,18 @@
 package org.programmiersportgruppe.sbt.testreporter
 
 import java.io.File
-import java.nio.file.{Paths, Files}
+import java.nio.file.{Files, Paths}
 import java.text.{DateFormat, SimpleDateFormat}
-import java.util.{TimeZone, Date}
-
-import java.io._
+import java.util.Date
 
 import org.programmiersportgruppe.sbt.testreporter.ReportFormat._
-
-import scala.collection.mutable.ListBuffer
+import org.programmiersportgruppe.sbt.testreporter.Utilities._
+import sbt.Keys._
+import sbt._
 import sbt.testing.{Event => TEvent, Status => TStatus, _}
 
-import sbt._
-import Keys._
-
+import scala.collection.mutable.ListBuffer
 import scala.util.DynamicVariable
-import Utilities._
 
 object TabularTestReporterPlugin extends AutoPlugin {
 
@@ -41,7 +37,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
 
     val timeStampFileName: String = new SimpleDateFormat("YMMdd-HHmmss").format(timeStamp)
 
-    val timeStampIsao8601 = {
+    val timeStampIso8601: String = {
         //val tz = TimeZone.getTimeZone("UTC");
         val df: DateFormat  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         //df.setTimeZone(tz)
@@ -58,7 +54,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
      */
     class TestSuite(val suiteName: String) {
         val events: ListBuffer[TEvent] = new ListBuffer()
-        val start = System.currentTimeMillis
+        val start: Long = System.currentTimeMillis
 
         def addEvent(e: TEvent) = events += e
 
@@ -131,7 +127,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
     var testSuite: DynamicVariable[TestSuite] = new DynamicVariable[TestSuite](null)
 
     /** Creates the output Dir */
-    override def doInit() = {
+    override def doInit(): Unit = {
         targetDir.mkdirs()
     }
 
@@ -148,7 +144,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
         }
     }
 
-    override def endGroup(name: String, t: Throwable) = {
+    override def endGroup(name: String, t: Throwable): Unit = {
         this.synchronized {
             val timestamp = new Date()
             val summary: TestSummary =TestSummary(
@@ -169,7 +165,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
         t.printStackTrace(System.err)
     }
 
-    override def endGroup(name: String, result: TestResult.Value) = {
+    override def endGroup(name: String, result: TestResult): Unit = {
         this.synchronized {
             results ++= testSuite.value.stop()
         }
@@ -190,19 +186,17 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
     }
 
     /** Does nothing, as we write each file after a suite is done. */
-    override def doComplete(finalResult: TestResult.Value): Unit = {
+    override def doComplete(finalResult: TestResult): Unit = {
         println("formats: " + formats)
         formats.foreach((format: ReportFormat) =>{
 
-            val resultPath: String = new sbt.File(targetDir, s"test-results-${timeStampFileName}.${format.extension}").getAbsolutePath
+            val resultPath: String = new sbt.File(targetDir, s"test-results-$timeStampFileName.${format.extension}").getAbsolutePath
             format match {
-                case WhiteSpaceDelimited => {
+                case WhiteSpaceDelimited =>
                     (results.map(result => result.toColumns.mkString(" ")).mkString("\n") + "\n").save(resultPath)
-                }
-                case Html => {scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8", xmlDecl = true)}
-                case Json => {
+                case Html => scala.xml.XML.save(resultPath, new HtmlFormatter(results).htmlReport, enc = "UTF-8", xmlDecl = true)
+                case Json =>
                     (results.map(_.toJson).mkString("\n") + "\n").save(resultPath)
-                }
             }
             createOrUpdateSymLink(resultPath, s"test-results-latest.${format.extension}")
         } )
