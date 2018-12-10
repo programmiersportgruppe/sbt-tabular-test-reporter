@@ -38,6 +38,9 @@ pomExtra := (
 
 useGpg := true
 
+
+updateOptions := updateOptions.value.withGigahorse(false)
+
 sbtPlugin := true
 
 name := "tabulartestreporter"
