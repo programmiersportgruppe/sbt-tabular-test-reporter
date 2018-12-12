@@ -5,6 +5,7 @@ import java.nio.file.{Files, Paths}
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Date
 
+import org.programmiersportgruppe.sbt.testreporter.LatestResultMode.Symlink
 import org.programmiersportgruppe.sbt.testreporter.ReportFormat._
 import org.programmiersportgruppe.sbt.testreporter.Utilities._
 import sbt.Keys._
@@ -16,23 +17,31 @@ import scala.util.DynamicVariable
 
 object TabularTestReporterPlugin extends AutoPlugin {
 
+
     object autoImport {
         val Html = ReportFormat.Html
         val WhiteSpaceDelimited = ReportFormat.WhiteSpaceDelimited
         val Json = ReportFormat.Json
 
         lazy val testReportFormats = settingKey[Set[ReportFormat]]("report formats")
+
+        lazy val latestResultsMode = settingKey[LatestResultMode]("create symlinks or copies for latest results")
+
+        val Symlink = LatestResultMode.Symlink
+        val Copy = LatestResultMode.Copy
+        val Skip = LatestResultMode.Skip
     }
 
     override lazy val projectSettings = Seq(
         autoImport.testReportFormats := Set(WhiteSpaceDelimited, Html, Json),
-        testListeners += new TabularTestReporter(target.value.getAbsolutePath, autoImport.testReportFormats.value)
+        autoImport.latestResultsMode := Symlink,
+        testListeners += new TabularTestReporter(target.value.getAbsolutePath, autoImport.testReportFormats.value, autoImport.latestResultsMode.value)
     )
 
     override val trigger = AllRequirements
 }
 
-class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) extends TestsListener {
+class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat], latestResultMode: LatestResultMode) extends TestsListener {
     private val timeStamp: Date = new Date()
 
     val timeStampFileName: String = new SimpleDateFormat("YMMdd-HHmmss").format(timeStamp)
@@ -171,19 +180,6 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
         }
     }
 
-    def createOrUpdateSymLink(resultPath: String, linkName: String) : Unit = {
-        try {
-
-            val symlink = new File(new File(outputDir), linkName).toPath
-            if (Files.isSymbolicLink(symlink)) {
-                Files.delete(symlink)
-            }
-
-            Files.createSymbolicLink(symlink, Paths.get(resultPath))
-        } catch {case ex: java.nio.file.FileSystemException => (
-
-            )}
-    }
 
     /** Does nothing, as we write each file after a suite is done. */
     override def doComplete(finalResult: TestResult): Unit = {
@@ -198,7 +194,7 @@ class TabularTestReporter(val outputDir: String, formats: Set[ReportFormat]) ext
                 case Json =>
                     (results.map(_.toJson).mkString("\n") + "\n").save(resultPath)
             }
-            createOrUpdateSymLink(resultPath, s"test-results-latest.${format.extension}")
+            latestResultMode.updateLatestResult(resultPath, new File(outputDir, s"test-results-latest.${format.extension}"))
         } )
     }
 
